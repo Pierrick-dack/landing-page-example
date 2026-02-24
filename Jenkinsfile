@@ -1,15 +1,25 @@
 pipeline {
-    agent any
+    agent {
+        label 'Agent-DevOps'
+    }
 
     stages {
+        stage ('Verification Agent') {
+            steps {
+                echo 'Vérification de l\'identité de la machine de travail :'
+                sh 'hostname'
+                sh 'whoami'
+            }
+        }
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/fredericEducentre/landing-page-example'
+                git branch: 'main', url: 'https://github.com/Pierrick-dack/landing-page-example'
             }
         }
         stage('Build') {
             steps {
                 echo 'Simulation du Build en cours...'
+                echo 'Le travail est exécuté sur l\'Agent DevOps !'
                 sh 'ls -la' 
             }
         }
