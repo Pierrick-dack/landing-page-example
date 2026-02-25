@@ -32,7 +32,7 @@ pipeline {
                 echo 'Déploiement sur la VM Azure...'
                 // Connexion SSH pour mettre à jour le conteneur sur Azure
                 sh """
-                ssh -o StrictHostKeyChecking=no Pierrick@4.251.194.55 "
+                ssh -o StrictHostKeyChecking=no pierrick@4.251.194.55 "
                     sudo docker pull pierrickdevops/landing-page-example:v1 && \
                     sudo docker stop mon-site || true && \
                     sudo docker rm mon-site || true && \
