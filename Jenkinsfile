@@ -8,7 +8,7 @@ pipeline {
             steps {
                 echo 'Vérification de l\'environnement...'
                 sh 'docker --version'
-                // On nettoie les anciennes images locales pour gagner de la place
+                // On nettoie les anciennes images locales pour gagner de la place dans les nouveaux
                 sh 'docker system prune -f'
             }
         }
