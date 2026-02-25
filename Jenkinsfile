@@ -16,11 +16,11 @@ pipeline {
         stage('Build & Push to DockerHub') {
             steps {
                 echo 'Construction de l\'image Docker...'
-                // Construction de l'image avec ton tag v1 [cite: 2026-02-25]
+                // Construction de l'image avec ton tag v1
                 sh 'docker build -t pierrickdevops/landing-page-example:v1 .'
                 
                 echo 'Publication sur DockerHub...'
-                // On pousse l'image vers le cloud [cite: 2026-02-25]
+                // On pousse l'image vers le cloud
                 sh 'docker push pierrickdevops/landing-page-example:v1'
             }
         }
@@ -28,7 +28,7 @@ pipeline {
         stage('Deploy to Azure') {
             steps {
                 echo 'Déploiement sur la VM Azure...'
-                // Connexion SSH pour mettre à jour le conteneur sur Azure [cite: 2026-02-25]
+                // Connexion SSH pour mettre à jour le conteneur sur Azure
                 sh """
                 ssh -o StrictHostKeyChecking=no Pierrick@4.251.194.55 "
                     sudo docker pull pierrickdevops/landing-page-example:v1 && \
