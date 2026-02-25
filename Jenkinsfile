@@ -4,32 +4,39 @@ pipeline {
     }
 
     stages {
-        stage ('Verification Agent') {
+        stage('Verification & Cleanup') {
             steps {
-                echo 'Vérification de l\'identité de la machine de travail :'
-                sh 'hostname'
-                sh 'whoami'
+                echo 'Vérification de l\'environnement...'
+                sh 'docker --version'
+                // On nettoie les anciennes images locales pour gagner de la place
+                sh 'docker system prune -f'
             }
         }
-        stage('Checkout') {
+
+        stage('Build & Push to DockerHub') {
             steps {
-                git branch: 'main', url: 'https://github.com/Pierrick-dack/landing-page-example'
+                echo 'Construction de l\'image Docker...'
+                // Construction de l'image avec ton tag v1 [cite: 2026-02-25]
+                sh 'docker build -t pierrickdevops/landing-page-example:v1 .'
+                
+                echo 'Publication sur DockerHub...'
+                // On pousse l'image vers le cloud [cite: 2026-02-25]
+                sh 'docker push pierrickdevops/landing-page-example:v1'
             }
         }
-        stage('Build') {
+
+        stage('Deploy to Azure') {
             steps {
-                echo 'Simulation du Build en cours...'
-                echo 'Le travail est exécuté sur l\'Agent DevOps !'
-                sh 'ls -la' 
-            }
-        }
-        stage('Deploy') {
-            steps {
-                echo 'Déploiement en cours sur le serveur de production...'
-                // Simulation d'une copie de fichiers en loca
-                sh 'mkdir -p /tmp/production_site'
-                sh 'cp index.html /tmp/production_site/'
-                echo 'Le site est désormais en ligne !'
+                echo 'Déploiement sur la VM Azure...'
+                // Connexion SSH pour mettre à jour le conteneur sur Azure [cite: 2026-02-25]
+                sh """
+                ssh -o StrictHostKeyChecking=no Pierrick@4.251.194.55 "
+                    sudo docker pull pierrickdevops/landing-page-example:v1 && \
+                    sudo docker stop mon-site || true && \
+                    sudo docker rm mon-site || true && \
+                    sudo docker run -d -p 80:80 --name mon-site pierrickdevops/landing-page-example:v1
+                "
+                """
             }
         }
     }
